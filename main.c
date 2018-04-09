@@ -1,4 +1,5 @@
 /** 文件名: main.c */
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +17,7 @@ typedef unsigned char uint8_t;
 typedef struct {
 	const void *in_data;
 	size_t in_data_len;
+	bool in_data_is_already_padded;
 	const uint8_t *in_ivec;
 	const void *in_key;
 	size_t in_key_len;
@@ -27,6 +29,22 @@ void test_encrypt_with_cipher(const test_case_t *in, const EVP_CIPHER *cipher)
 	EVP_CIPHER_CTX *ctx;
 	ctx = EVP_CIPHER_CTX_new();
 	EVP_EncryptInit_ex(ctx, cipher, NULL, in->in_key, in->in_ivec);
+
+	if (in->in_data_is_already_padded)
+	{
+		/* Disable the implicit PKCS#7 padding defined in EVP_CIPHER */
+		EVP_CIPHER_CTX_set_padding(ctx, 0);
+		/* Check whether the input data is already padded.
+		And its length must be an integral multiple of the cipher's block size. */
+		const size_t bs = EVP_CIPHER_block_size(cipher);
+		if (in->in_data_len % bs != 0)
+		{
+			printf("ERROR-1: data length=%d which is not added yet; block size=%d\n", in->in_data_len, bs);
+			/* Warning: Remember to do some clean-ups */
+			EVP_CIPHER_CTX_free(ctx);
+			return;
+		}
+	}
 
 	const size_t in_len = in->in_data_len;
 	uint8_t out_buf[((in_len>>4)+1) * 16];
@@ -79,6 +97,7 @@ void main()
 
 	tc.in_data = (void *) data;
 	tc.in_data_len = sizeof(data);
+	tc.in_data_is_already_padded = (tc.in_data_len % 16)==0; // Hard coded 16 as the cipher's block size
 	tc.in_key = (void *) key1;
 	tc.in_key_len = sizeof(key1);
 	memset(ivec, 0x00, EVP_MAX_IV_LENGTH);
