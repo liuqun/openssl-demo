@@ -14,6 +14,15 @@ typedef unsigned char uint8_t;
 #include "openssl/err.h"
 #include "openssl/evp.h"
 
+/* EVP_sm4_xxx() was added since OpenSSL 1.1.1-pre1 */
+#if defined(OPENSSL_VERSION_NUMBER) \
+	&& OPENSSL_VERSION_NUMBER < 0x10101001L
+static inline const EVP_CIPHER *EVP_sm4_ecb()
+{
+	return NULL;
+}
+#endif
+
 typedef struct {
 	const void *in_data;
 	size_t in_data_len;
@@ -80,7 +89,7 @@ void test_encrypt_with_cipher(const test_case_t *in, const EVP_CIPHER *cipher)
 
 void main()
 {
-	int have_sm4 = 1;
+	int have_sm4 = (OPENSSL_VERSION_NUMBER >= 0x10101001L);
 	int have_aes = 1;
 	const uint8_t data[]=
 	{
