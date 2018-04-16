@@ -11,3 +11,9 @@ add_definitions(-DHAVE_CONFIG_H)
 aux_source_directory(./src DEMO_SOURCES)
 add_executable(demo ${DEMO_SOURCES})
 set_property(TARGET demo PROPERTY C_STANDARD 11)
+
+find_package(OpenSSL REQUIRED)
+target_include_directories(demo PRIVATE ${OPENSSL_INCLUDE_DIR})
+target_link_libraries(demo PRIVATE
+  ${OPENSSL_CRYPTO_LIBRARY}
+)
