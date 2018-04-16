@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.1)
+project(DEMO LANGUAGES C)
+aux_source_directory(./src DEMO_SOURCES)
+add_executable(demo ${DEMO_SOURCES})
+set_property(TARGET demo PROPERTY C_STANDARD 11)
