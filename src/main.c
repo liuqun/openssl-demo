@@ -39,7 +39,7 @@ void test_encrypt_with_cipher(const test_case_t *in, const EVP_CIPHER *cipher)
 		const size_t bs = EVP_CIPHER_block_size(cipher);
 		if (in->in_data_len % bs != 0)
 		{
-			printf("ERROR-1: data length=%d which is not added yet; block size=%d\n", in->in_data_len, bs);
+			printf("ERROR-1: data length=%d which is not added yet; block size=%d\n", (int) in->in_data_len, (int) bs);
 			/* Warning: Remember to do some clean-ups */
 			EVP_CIPHER_CTX_free(ctx);
 			return;
