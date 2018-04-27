@@ -1,0 +1,27 @@
+sudo: required
+dist: trusty
+language: c
+compiler:
+  - gcc
+
+env:
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - libssl-dev
+
+install:
+  - mkdir -p build
+  - pushd build
+  - cmake ..
+  - make
+  - popd # build
+
+script:
+  # TODO: Check the demo program's output.
+  - ./build/demo
+
+after_failure:
+  # TODO: Report failure infomation
