@@ -15,7 +15,7 @@ addons:
 install:
   - mkdir -p build
   - pushd build
-  - cmake ..
+  - cmake ../sm4-demo
   - make
   - popd # build
 
