@@ -3,3 +3,6 @@
 *.swp
 *.bak
 *.log
+*.cmake
+CMakeCache.txt
+CMakeFiles
