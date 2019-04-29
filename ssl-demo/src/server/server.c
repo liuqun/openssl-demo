@@ -1,5 +1,6 @@
 ﻿/** 文件名: server.c */
 #include <stdio.h>
+#include <string.h>
 #include <openssl/evp.h>
 #include <openssl/x509.h>
 #include <openssl/ssl.h>
@@ -7,6 +8,7 @@
 #include <openssl/err.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <dlfcn.h>
 #include <unistd.h>
 
@@ -34,7 +36,7 @@ int main()
 	rv = SSL_library_init();
 	CHK_RV(rv, "SSL_library_init");
 
-	meth = TLSv1_2_server_method();
+	meth = TLS_server_method();
 	ctx = SSL_CTX_new(meth);
 	CHK_NULL(ctx, "SSL_CTX_new");
 
@@ -63,7 +65,7 @@ int main()
 	accept_sd = accept(listen_sd, (struct sockaddr *)&socketAddrClient, &socketAddrClientLen);
 	CHK_ERR(accept_sd, "accept");
 	close(listen_sd);
-	printf("Connect to %lx, port %x\n", socketAddrClient.sin_addr.s_addr, socketAddrClient.sin_port);
+	printf("Connect to %s, port 0x%04X(=%d)\n", inet_ntoa(socketAddrClient.sin_addr), (int)ntohs(socketAddrClient.sin_port), (int)ntohs(socketAddrClient.sin_port));
 
 	ssl = SSL_new(ctx);
 	CHK_NULL(ssl, "SSL_new");

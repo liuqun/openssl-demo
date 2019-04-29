@@ -1,5 +1,6 @@
 ﻿/** 文件名: client.c */
 #include <stdio.h>
+#include <string.h>
 #include <openssl/evp.h>
 #include <openssl/x509.h>
 #include <openssl/ssl.h>
@@ -30,7 +31,7 @@ int main()
 	rv = SSL_library_init();
 	CHK_RV(rv, "SSL_library_init");
 
-	meth = TLSv1_2_client_method();
+	meth = TLS_client_method();
 	ctx = SSL_CTX_new(meth);
 	CHK_NULL(ctx, "SSL_CTX_new");
 
