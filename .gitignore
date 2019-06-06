@@ -6,3 +6,5 @@
 *.cmake
 CMakeCache.txt
 CMakeFiles
+*.tar.*
+openssl
