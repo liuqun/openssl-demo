@@ -6,9 +6,13 @@
 #include "openssl/err.h"
 #include "openssl/evp.h"
 
+#if !defined(OPENSSL_VERSION_NUMBER)
+#define OPENSSL_VERSION_NUMBER 0
+#endif
+
 /* Before OpenSSL 1.1.1-pre1, we did not have EVP_sm4_ecb() */
-#if defined(OPENSSL_VERSION_NUMBER) \
-	&& OPENSSL_VERSION_NUMBER < 0x10101001L
+#if defined(OPENSSL_NO_SM4) || \
+	OPENSSL_VERSION_NUMBER < 0x10101001L
 static const EVP_CIPHER *(*EVP_sm4_ecb)()=EVP_aes_128_ecb;
 #endif
 
